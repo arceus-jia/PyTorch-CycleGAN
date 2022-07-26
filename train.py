@@ -34,6 +34,8 @@ parser.add_argument('--vis_env', type=str, default='main', help='visdom display 
 parser.add_argument('--vis_port', type=int, default=8000, help='visdom port of the web display')
 parser.add_argument('--save_epoch_freq', type=int, default=5, help='frequency of saving checkpoints at the end of epochs')
 parser.add_argument('--display_freq', type=int, default=400, help='frequency of showing training results on screen')
+parser.add_argument('--output',type=str, default='output/', help='output folder')
+
 
 opt = parser.parse_args()
 print(opt)
@@ -197,15 +199,15 @@ for epoch in range(opt.epoch, opt.n_epochs):
     # Save models checkpoints
 
     if epoch % opt.save_epoch_freq == 0:
-        torch.save(netG_A2B.state_dict(), 'output/netG_A2B.pth')
-        torch.save(netG_B2A.state_dict(), 'output/netG_B2A.pth')
-        torch.save(netD_A.state_dict(), 'output/netD_A.pth')
-        torch.save(netD_B.state_dict(), 'output/netD_B.pth')
+        torch.save(netG_A2B.state_dict(), '%s/netG_A2B.pth' % opt.output)
+        torch.save(netG_B2A.state_dict(), '%s/netG_B2A.pth' % opt.output)
+        torch.save(netD_A.state_dict(), '%s/netD_A.pth' % opt.output)
+        torch.save(netD_B.state_dict(), '%s/netD_B.pth' % opt.output)
 
-        torch.save(netG_A2B.state_dict(), 'output/netG_A2B_%d.pth' % epoch)
-        torch.save(netG_B2A.state_dict(), 'output/netG_B2A_%d.pth' % epoch)
-        torch.save(netD_A.state_dict(), 'output/netD_A_%d.pth' % epoch)
-        torch.save(netD_B.state_dict(), 'output/netD_B_%d.pth' % epoch)        
+        torch.save(netG_A2B.state_dict(), '%s/netG_A2B_%d.pth' % (opt.output, epoch))
+        torch.save(netG_B2A.state_dict(), '%s/netG_B2A_%d.pth' % (opt.output, epoch))
+        torch.save(netD_A.state_dict(), '%s/netD_A_%d.pth' % (opt.output, epoch))
+        torch.save(netD_B.state_dict(), '%s/netD_B_%d.pth' % (opt.output, epoch))        
 ###################################
 
 # python train.py --dataroot /data/cyclegan2/cartoon/ --cuda --gpuid 0 --vis_env cartoon --batchSize 8 --n_cpu 12

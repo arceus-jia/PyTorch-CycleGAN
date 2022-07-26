@@ -102,8 +102,7 @@ ENV/
 
 # project directories
 datasets/
-output/A/
-output/B/
+output/*
 input/*
 
 # model checkpoints
