@@ -103,7 +103,7 @@ logger = Logger(opt.n_epochs, len(dataloader),opt.vis_port, opt.vis_env)
 total_iters = 0
 for epoch in range(opt.epoch, opt.n_epochs):
     for i, batch in enumerate(dataloader):
-        total_iters += batch
+        total_iters += opt.batchSize
 
         # Set model input
         real_A = Variable(input_A.copy_(batch['A']))
