@@ -32,6 +32,9 @@ parser.add_argument('--cuda', action='store_true', help='use GPU computation')
 parser.add_argument('--gpuid',type=str, default='0', action='store_true', help='use GPU computation')
 parser.add_argument('--vis_env', type=str, default='main', help='visdom display environment name (default is "main")')
 parser.add_argument('--vis_port', type=int, default=8000, help='visdom port of the web display')
+parser.add_argument('--save_epoch_freq', type=int, default=5, help='frequency of saving checkpoints at the end of epochs')
+parser.add_argument('--display_freq', type=int, default=400, help='frequency of showing training results on screen')
+
 opt = parser.parse_args()
 print(opt)
 os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
@@ -97,8 +100,11 @@ logger = Logger(opt.n_epochs, len(dataloader),opt.vis_port, opt.vis_env)
 ###################################
 
 ###### Training ######
+total_iters = 0
 for epoch in range(opt.epoch, opt.n_epochs):
     for i, batch in enumerate(dataloader):
+        total_iters += batch
+
         # Set model input
         real_A = Variable(input_A.copy_(batch['A']))
         real_B = Variable(input_B.copy_(batch['B']))
@@ -176,9 +182,10 @@ for epoch in range(opt.epoch, opt.n_epochs):
         ###################################
 
         # Progress report (http://localhost:8097)
-        logger.log({'loss_G': loss_G, 'loss_G_identity': (loss_identity_A + loss_identity_B), 'loss_G_GAN': (loss_GAN_A2B + loss_GAN_B2A),
-                    'loss_G_cycle': (loss_cycle_ABA + loss_cycle_BAB), 'loss_D': (loss_D_A + loss_D_B)}, 
-                    images={'real_A': real_A, 'real_B': real_B, 'fake_A': fake_A, 'fake_B': fake_B})
+        if total_iters % opt.display_freq == 0:
+            logger.log({'loss_G': loss_G, 'loss_G_identity': (loss_identity_A + loss_identity_B), 'loss_G_GAN': (loss_GAN_A2B + loss_GAN_B2A),
+                        'loss_G_cycle': (loss_cycle_ABA + loss_cycle_BAB), 'loss_D': (loss_D_A + loss_D_B)}, 
+                        images={'real_A': real_A, 'real_B': real_B, 'fake_A': fake_A, 'fake_B': fake_B})
 
     # Update learning rates
     lr_scheduler_G.step()
@@ -186,8 +193,15 @@ for epoch in range(opt.epoch, opt.n_epochs):
     lr_scheduler_D_B.step()
 
     # Save models checkpoints
-    torch.save(netG_A2B.state_dict(), 'output/netG_A2B.pth')
-    torch.save(netG_B2A.state_dict(), 'output/netG_B2A.pth')
-    torch.save(netD_A.state_dict(), 'output/netD_A.pth')
-    torch.save(netD_B.state_dict(), 'output/netD_B.pth')
+
+    if epoch % opt.save_epoch_freq == 0:
+        torch.save(netG_A2B.state_dict(), 'output/netG_A2B.pth')
+        torch.save(netG_B2A.state_dict(), 'output/netG_B2A.pth')
+        torch.save(netD_A.state_dict(), 'output/netD_A.pth')
+        torch.save(netD_B.state_dict(), 'output/netD_B.pth')
+
+        torch.save(netG_A2B.state_dict(), 'output/netG_A2B_%d.pth' % epoch)
+        torch.save(netG_B2A.state_dict(), 'output/netG_B2A_%d.pth' % epoch)
+        torch.save(netD_A.state_dict(), 'output/netD_A_%d.pth' % epoch)
+        torch.save(netD_B.state_dict(), 'output/netD_B_%d.pth' % epoch)        
 ###################################
