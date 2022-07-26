@@ -29,7 +29,7 @@ parser.add_argument('--output_nc', type=int, default=3, help='number of channels
 parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
 parser.add_argument('--cuda', action='store_true', help='use GPU computation')
 
-parser.add_argument('--gpuid',type=str, default='0', action='store_true', help='use GPU computation')
+parser.add_argument('--gpuid',type=str, default='0',  help='use GPU computation')
 parser.add_argument('--vis_env', type=str, default='main', help='visdom display environment name (default is "main")')
 parser.add_argument('--vis_port', type=int, default=8000, help='visdom port of the web display')
 parser.add_argument('--save_epoch_freq', type=int, default=5, help='frequency of saving checkpoints at the end of epochs')
@@ -205,3 +205,5 @@ for epoch in range(opt.epoch, opt.n_epochs):
         torch.save(netD_A.state_dict(), 'output/netD_A_%d.pth' % epoch)
         torch.save(netD_B.state_dict(), 'output/netD_B_%d.pth' % epoch)        
 ###################################
+
+# python train.py --dataroot /data/cyclegan2/cartoon/ --cuda --gpuid 0,1 --vis_env cartoon
