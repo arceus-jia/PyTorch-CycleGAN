@@ -1,7 +1,6 @@
-#!/usr/bin/python3
-
 import argparse
 import itertools
+import os
 
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -27,10 +26,15 @@ parser.add_argument('--decay_epoch', type=int, default=100, help='epoch to start
 parser.add_argument('--size', type=int, default=256, help='size of the data crop (squared assumed)')
 parser.add_argument('--input_nc', type=int, default=3, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=3, help='number of channels of output data')
-parser.add_argument('--cuda', action='store_true', help='use GPU computation')
 parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
+parser.add_argument('--cuda', action='store_true', help='use GPU computation')
+
+parser.add_argument('--gpuid',type=str, default='0', action='store_true', help='use GPU computation')
+parser.add_argument('--vis_env', type=str, default='main', help='visdom display environment name (default is "main")')
+parser.add_argument('--vis_port', type=int, default=8000, help='visdom port of the web display')
 opt = parser.parse_args()
 print(opt)
+os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
 
 if torch.cuda.is_available() and not opt.cuda:
     print("WARNING: You have a CUDA device, so you should probably run with --cuda")
@@ -41,6 +45,7 @@ netG_A2B = Generator(opt.input_nc, opt.output_nc)
 netG_B2A = Generator(opt.output_nc, opt.input_nc)
 netD_A = Discriminator(opt.input_nc)
 netD_B = Discriminator(opt.output_nc)
+
 
 if opt.cuda:
     netG_A2B.cuda()
@@ -88,7 +93,7 @@ dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, unal
                         batch_size=opt.batchSize, shuffle=True, num_workers=opt.n_cpu)
 
 # Loss plot
-logger = Logger(opt.n_epochs, len(dataloader))
+logger = Logger(opt.n_epochs, len(dataloader),opt.vis_port, opt.vis_env)
 ###################################
 
 ###### Training ######
