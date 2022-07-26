@@ -182,10 +182,12 @@ for epoch in range(opt.epoch, opt.n_epochs):
         ###################################
 
         # Progress report (http://localhost:8097)
+        display_images = None
         if total_iters % opt.display_freq == 0:
-            logger.log({'loss_G': loss_G, 'loss_G_identity': (loss_identity_A + loss_identity_B), 'loss_G_GAN': (loss_GAN_A2B + loss_GAN_B2A),
-                        'loss_G_cycle': (loss_cycle_ABA + loss_cycle_BAB), 'loss_D': (loss_D_A + loss_D_B)}, 
-                        images={'real_A': real_A, 'real_B': real_B, 'fake_A': fake_A, 'fake_B': fake_B})
+            display_images={'real_A': real_A, 'real_B': real_B, 'fake_A': fake_A, 'fake_B': fake_B}
+        logger.log({'loss_G': loss_G, 'loss_G_identity': (loss_identity_A + loss_identity_B), 'loss_G_GAN': (loss_GAN_A2B + loss_GAN_B2A),
+                    'loss_G_cycle': (loss_cycle_ABA + loss_cycle_BAB), 'loss_D': (loss_D_A + loss_D_B)}, 
+                    images=display_images)
 
     # Update learning rates
     lr_scheduler_G.step()
@@ -206,4 +208,4 @@ for epoch in range(opt.epoch, opt.n_epochs):
         torch.save(netD_B.state_dict(), 'output/netD_B_%d.pth' % epoch)        
 ###################################
 
-# python train.py --dataroot /data/cyclegan2/cartoon/ --cuda --gpuid 0,1 --vis_env cartoon
+# python train.py --dataroot /data/cyclegan2/cartoon/ --cuda --gpuid 0 --vis_env cartoon --batchSize 8 --n_cpu 12
