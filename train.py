@@ -14,6 +14,7 @@ from utils import ReplayBuffer
 from utils import LambdaLR
 from utils import Logger
 from utils import weights_init_normal
+from utils import load_networks
 from datasets import ImageDataset
 
 parser = argparse.ArgumentParser()
@@ -35,10 +36,11 @@ parser.add_argument('--vis_port', type=int, default=8000, help='visdom port of t
 parser.add_argument('--save_epoch_freq', type=int, default=5, help='frequency of saving checkpoints at the end of epochs')
 parser.add_argument('--display_freq', type=int, default=400, help='frequency of showing training results on screen')
 parser.add_argument('--output',type=str, default='output/', help='output folder')
-
+parser.add_argument('--continue_train', action='store_true', help='continue training: load the latest model')
 
 opt = parser.parse_args()
 print(opt)
+device = torch.device('cpu')
 os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
 
 if torch.cuda.is_available() and not opt.cuda:
@@ -53,15 +55,22 @@ netD_B = Discriminator(opt.output_nc)
 
 
 if opt.cuda:
+    device = torch.device("cuda:%s" % opt.gpuid)
     netG_A2B.cuda()
     netG_B2A.cuda()
     netD_A.cuda()
     netD_B.cuda()
 
-netG_A2B.apply(weights_init_normal)
-netG_B2A.apply(weights_init_normal)
-netD_A.apply(weights_init_normal)
-netD_B.apply(weights_init_normal)
+if opt.continue_train:
+    load_networks(netG_A2B, os.path.join(opt.output, 'netG_A2B.pth'), device)
+    load_networks(netG_B2A, os.path.join(opt.output, 'netG_B2A.pth'), device)
+    load_networks(netD_A, os.path.join(opt.output, 'netD_A.pth'), device)
+    load_networks(netD_B, os.path.join(opt.output, 'netD_B.pth'), device)
+else:
+    netG_A2B.apply(weights_init_normal)
+    netG_B2A.apply(weights_init_normal)
+    netD_A.apply(weights_init_normal)
+    netD_B.apply(weights_init_normal)
 
 # Lossess
 criterion_GAN = torch.nn.MSELoss()

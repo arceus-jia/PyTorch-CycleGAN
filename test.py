@@ -51,7 +51,9 @@ input_B = Tensor(opt.batchSize, opt.output_nc, opt.size, opt.size)
 
 # Dataset loader
 transforms_ = [ transforms.ToTensor(),
-                transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5)) ]
+                transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5)),
+                transforms.Resize((opt.size,opt.size)) 
+                ]
 dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, mode='test'), 
                         batch_size=opt.batchSize, shuffle=False, num_workers=opt.n_cpu)
 ###################################
@@ -81,4 +83,4 @@ for i, batch in enumerate(dataloader):
 
 sys.stdout.write('\n')
 ###################################
-# python test.py --dataroot input
+# python test.py --cuda --generator_A2B mymodels/cartoon/netG_A2B.pth --generator_B2A mymodels/cartoon/netG_B2A.pth --dataroot input
