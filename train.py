@@ -55,7 +55,7 @@ netD_B = Discriminator(opt.output_nc)
 
 
 if opt.cuda:
-    device = torch.device("cuda:%s" % opt.gpuid)
+    device = torch.device("cuda")
     netG_A2B.to(device)
     netG_B2A.to(device)
     netD_A.to(device)
