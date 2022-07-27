@@ -41,7 +41,7 @@ parser.add_argument('--continue_train', action='store_true', help='continue trai
 opt = parser.parse_args()
 print(opt)
 device = torch.device('cpu')
-os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
+# os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
 
 if torch.cuda.is_available() and not opt.cuda:
     print("WARNING: You have a CUDA device, so you should probably run with --cuda")
@@ -56,10 +56,10 @@ netD_B = Discriminator(opt.output_nc)
 
 if opt.cuda:
     device = torch.device("cuda:%s" % opt.gpuid)
-    netG_A2B.cuda()
-    netG_B2A.cuda()
-    netD_A.cuda()
-    netD_B.cuda()
+    netG_A2B.to(device)
+    netG_B2A.to(device)
+    netD_A.to(device)
+    netD_B.to(device)
 
 if opt.continue_train:
     load_networks(netG_A2B, os.path.join(opt.output, 'netG_A2B.pth'), device)
