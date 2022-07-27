@@ -41,7 +41,7 @@ parser.add_argument('--continue_train', action='store_true', help='continue trai
 opt = parser.parse_args()
 print(opt)
 device = torch.device('cpu')
-# os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
+os.environ['CUDA_VISIBLE_DEVICES']=opt.gpuid
 
 if torch.cuda.is_available() and not opt.cuda:
     print("WARNING: You have a CUDA device, so you should probably run with --cuda")
