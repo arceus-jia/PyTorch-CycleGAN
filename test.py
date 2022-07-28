@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+import time
 
 import torchvision.transforms as transforms
 from torchvision.utils import save_image
@@ -72,7 +73,9 @@ for i, batch in enumerate(dataloader):
     real_B = Variable(input_B.copy_(batch['B']))
 
     # Generate output
+    st = time.time()
     fake_B = 0.5*(netG_A2B(real_A).data + 1.0)
+    print ('cost..',time.time()-st)
     fake_A = 0.5*(netG_B2A(real_B).data + 1.0)
 
     # Save image files

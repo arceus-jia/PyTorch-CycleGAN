@@ -8,13 +8,14 @@ import cv2
 import numpy as np
 import torchvision.transforms as transforms
 from PIL import Image
+import time
 
 def get_input():
     transforms_ = [transforms.ToTensor(),
                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
                    transforms.Resize((256, 256))]
 
-    img = cv2.imread('../input/test/A/sy2.jpg').astype(np.float32)
+    img = cv2.imread('../input/test/A/0.jpg').astype(np.float32)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     shape = img.shape
     img = img / 255.0
@@ -32,7 +33,10 @@ def test():
 
     img,shape = get_input()
 
+    st = time.time()
     fake_img = session.run(None, {x: img})
+    print ('time cost:',time.time()-st)
+
     fake_img = np.array(fake_img)
     fake_img = np.squeeze(fake_img)
     fake_img = fake_img.transpose(1, 2, 0)
@@ -53,7 +57,7 @@ def test2():
 
     transforms_ = [transforms.ToTensor(),
                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                   transforms.Resize((256, 256))]
+                   transforms.Resize((384, 384))]
 
     img = transforms.Compose(transforms_)(
         Image.open('../input/test/A/xin.jpg'))
