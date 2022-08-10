@@ -19,7 +19,7 @@ parser.add_argument('--batchSize', type=int, default=1, help='size of the batche
 parser.add_argument('--dataroot', type=str, default='input/test/A/sy2.jpg', help='root directory of the dataset')
 parser.add_argument('--input_nc', type=int, default=3, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=3, help='number of channels of output data')
-parser.add_argument('--size', type=int, default=384, help='size of the data (squared assumed)')
+parser.add_argument('--size', type=int, default=320, help='size of the data (squared assumed)')
 
 parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
 parser.add_argument('--generator_A2B', type=str, default='mymodels/cartoon/netG_A2B.pth', help='A2B generator checkpoint file')
@@ -68,8 +68,8 @@ print ('cost..',time.time()-st)
 fake_A = 0.5*(netG_B2A(img).data + 1.0)
 
 
-save_image(fake_A, 'output/a.png')
-save_image(fake_B, 'output/bb.png')
+save_image(fake_A, 'output/a.png', size = (shape[1],shape[0]))
+save_image(fake_B, 'output/b.png', size = (shape[1],shape[0]))
 
 ###################################
 # python test.py --cuda --generator_A2B mymodels/cartoon/netG_A2B.pth --generator_B2A mymodels/cartoon/netG_B2A.pth --dataroot input

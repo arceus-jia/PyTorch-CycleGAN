@@ -15,7 +15,7 @@ from models import Generator
 def get_input():
     transforms_ = [transforms.ToTensor(),
                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                   transforms.Resize((256, 256))]
+                   transforms.Resize((320, 320))]
 
     img = cv2.imread('../input/test/A/0.jpg').astype(np.float32)
     img = transforms.Compose(transforms_)(img)

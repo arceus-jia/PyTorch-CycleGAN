@@ -207,7 +207,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
     # Save models checkpoints
 
-    if epoch % opt.save_epoch_freq == 0:
+    if epoch % opt.save_epoch_freq == 0 or epoch == opt.epoch - 1:
         torch.save(netG_A2B.state_dict(), '%s/netG_A2B.pth' % opt.output)
         torch.save(netG_B2A.state_dict(), '%s/netG_B2A.pth' % opt.output)
         torch.save(netD_A.state_dict(), '%s/netD_A.pth' % opt.output)
@@ -219,4 +219,4 @@ for epoch in range(opt.epoch, opt.n_epochs):
         torch.save(netD_B.state_dict(), '%s/netD_B_%d.pth' % (opt.output, epoch))        
 ###################################
 
-# python train.py --dataroot /data/cyclegan2/cartoon/ --cuda --gpuid 0 --vis_env cartoon --batchSize 8 --n_cpu 12
+# python train.py --dataroot /data/cyclegan2/royalty/ --cuda --gpuid 0 --vis_env royalty --batchSize 1 --n_cpu 4 --output output/royalty --save_epoch_freq 20 --continue_train

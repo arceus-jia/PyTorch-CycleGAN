@@ -13,9 +13,9 @@ import time
 def get_input():
     transforms_ = [transforms.ToTensor(),
                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                   transforms.Resize((256, 256))]
+                   transforms.Resize((320, 320))]
 
-    img = cv2.imread('../input/test/A/0.jpg').astype(np.float32)
+    img = cv2.imread(sys.argv[2]).astype(np.float32)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     shape = img.shape
     img = img / 255.0
@@ -25,7 +25,7 @@ def get_input():
 
 
 def test():
-    onnx = os.path.join('../mymodels/model.onnx')
+    onnx = os.path.join(sys.argv[1])
     session = ort.InferenceSession(
         onnx, providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
     x = session.get_inputs()[0].name
@@ -49,7 +49,7 @@ def test():
 
 
 def test2():
-    onnx = os.path.join('../mymodels/model.onnx')
+    onnx = os.path.join(sys.argv[1])
     session = ort.InferenceSession(
         onnx, providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
     x = session.get_inputs()[0].name
@@ -75,3 +75,4 @@ def test2():
 
 if __name__ == '__main__':
     test()
+#  python test_onnx.py ../mymodels/baby.onnx ../input/chen_face.jpg
