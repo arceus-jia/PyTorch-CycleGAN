@@ -108,3 +108,6 @@ mymodels/*
 
 # model checkpoints
 *.pth
+
+#onnx
+*.onnx
